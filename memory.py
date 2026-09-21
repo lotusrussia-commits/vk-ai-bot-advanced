@@ -6,7 +6,7 @@ MEMORY_FILE = Path("user_memory.json")
 
 
 def load_memory():
-    """Загружает всю память пользователей."""
+    """Загружает долгосрочную память из файла."""
     if not MEMORY_FILE.exists():
         return {}
 
@@ -18,15 +18,19 @@ def load_memory():
 
 
 def save_memory(memory):
-    """Сохраняет память пользователей."""
+    """Сохраняет долгосрочную память в файл."""
     with open(MEMORY_FILE, "w", encoding="utf-8") as file:
-        json.dump(memory, file, ensure_ascii=False, indent=2)
+        json.dump(
+            memory,
+            file,
+            ensure_ascii=False,
+            indent=2,
+        )
 
 
 def add_fact(user_id, fact):
-    """Добавляет новый факт о пользователе."""
+    """Добавляет факт о пользователе."""
     memory = load_memory()
-
     user_id = str(user_id)
 
     if user_id not in memory:
@@ -39,6 +43,17 @@ def add_fact(user_id, fact):
 
 
 def get_facts(user_id):
-    """Возвращает сохранённые факты пользователя."""
+    """Возвращает сохранённые факты о пользователе."""
     memory = load_memory()
     return memory.get(str(user_id), [])
+
+
+def clear_memory(user_id):
+    """Удаляет все сохранённые факты пользователя."""
+    memory = load_memory()
+    user_id = str(user_id)
+
+    if user_id in memory:
+        del memory[user_id]
+
+    save_memory(memory)
